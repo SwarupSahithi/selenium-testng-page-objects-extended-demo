@@ -1,7 +1,9 @@
 FROM maven:3.9.6-eclipse-temurin-17
 
 # Install Chrome & dependencies
-RUN apt-get update && apt-get install -y wget gnupg2 curl unzip \
+RUN apt-get update && apt-get install -y apt-transport-https ca-certificates && \
+    sed -i 's|http://archive.ubuntu.com/ubuntu/|http://mirror.i3d.net/ubuntu/|g' /etc/apt/sources.list && \
+    apt-get update && apt-get install -y --fix-missing wget gnupg2 curl unzip \
     fonts-liberation libappindicator1 libasound2 libatk-bridge2.0-0 \
     libnss3 libxss1 libxcomposite1 libxcursor1 libxdamage1 libxrandr2 \
     libgtk-3-0 libgbm1 libxshmfence1 xdg-utils --no-install-recommends
