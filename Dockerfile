@@ -1,16 +1,19 @@
 FROM ubuntu:22.04
 
-# Prevents some tzdata prompts
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Switch to HTTPS sources before installing anything
-RUN sed -i 's|http://|https://|g' /etc/apt/sources.list && \
+# Step 1: Use HTTP temporarily to fetch certificates
+RUN sed -i 's|http://archive.ubuntu.com|http://old-releases.ubuntu.com|g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates
+
+# Step 2: Switch to HTTPS sources (now that certs are available)
+RUN sed -i 's|http://old-releases.ubuntu.com|https://archive.ubuntu.com|g' /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        ca-certificates \
         curl \
         wget \
-        gnupg2 \
+        gnupg \
         unzip \
         fonts-liberation \
         libappindicator1 \
