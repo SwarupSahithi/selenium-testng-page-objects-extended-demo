@@ -1,9 +1,10 @@
-FROM maven:3.8.6-openjdk-11 as builder
+# Use Maven with OpenJDK 17
+FROM maven:3.9.6-eclipse-temurin-17 as builder
 
-# Set working directory
+# Set work directory
 WORKDIR /app
 
-# Copy Maven project files
+# Copy your Maven project
 COPY pom.xml .
 COPY src ./src
 
@@ -17,15 +18,13 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Build your Maven project (skip tests if needed)
+# Build the project
 RUN mvn clean install -DskipTests
 
-# Use same image for final run (or switch to smaller one)
-FROM maven:3.8.6-openjdk-11
+# Final image
+FROM maven:3.9.6-eclipse-temurin-17
 
-# Copy build artifact from previous stage
 COPY --from=builder /app /app
-
 WORKDIR /app
 
 CMD ["mvn", "test"]
